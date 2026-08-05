@@ -14,7 +14,7 @@ COPY . .
 RUN go build -trimpath -ldflags="-s -w" -o /usr/src/qkms \
     && upx --best --lzma /usr/src/qkms
 
-FROM scratch
+FROM scratch AS server
 
 WORKDIR /
 
