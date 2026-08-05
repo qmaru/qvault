@@ -36,7 +36,7 @@ func Authenticate(apiKey string) (int64, error) {
 	return userID, err
 }
 
-func CreateUser(name string) (string, error) {
+func CreateUser(name string, prefix string, rotate bool) (string, error) {
 	name = strings.TrimSpace(name)
 	if name == "" {
 		return "", ErrInvalidUserName
@@ -46,14 +46,33 @@ func CreateUser(name string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	key = "sk-" + key
+	key = prefix + key
 
 	apiKeyHash, err := hashAPIKey(key)
 	if err != nil {
 		return "", err
 	}
 
-	_, err = dbs.GetDB().Exec(fmt.Sprintf(
+	db := dbs.GetDB()
+	if rotate {
+		result, err := db.Exec(fmt.Sprintf(
+			"UPDATE %s SET api_key_hash = ? WHERE name = ?", dbs.UserTable,
+		), apiKeyHash, name)
+		if err != nil {
+			return "", err
+		}
+
+		count, err := result.RowsAffected()
+		if err != nil {
+			return "", err
+		}
+		if count == 0 {
+			return "", ErrUserNotFound
+		}
+		return key, nil
+	}
+
+	_, err = db.Exec(fmt.Sprintf(
 		"INSERT INTO %s (name, api_key_hash, created_at) VALUES (?, ?, ?)", dbs.UserTable,
 	), name, apiKeyHash, time.Now().Unix())
 	if err != nil {

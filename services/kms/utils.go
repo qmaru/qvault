@@ -19,6 +19,7 @@ var (
 	ErrNotFound         = errors.New("secret not found")
 	ErrInvalidMasterKey = errors.New("MASTER_KEY must be exactly 32 bytes")
 	ErrInvalidUserName  = errors.New("user name is required")
+	ErrUserNotFound     = errors.New("user not found")
 )
 
 func masterKey() ([]byte, error) {

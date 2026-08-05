@@ -22,13 +22,15 @@ func NewCmd() *cobra.Command {
 }
 
 func userCreate() *cobra.Command {
+	var prefix string
 	var username string
+	var rotate bool
 
 	cmd := &cobra.Command{
 		Use:   "user",
 		Short: "create user",
 		Run: func(cmd *cobra.Command, args []string) {
-			key, err := kms.CreateUser(username)
+			key, err := kms.CreateUser(username, prefix, rotate)
 			if err != nil {
 				log.Fatal(err)
 			}
@@ -36,7 +38,9 @@ func userCreate() *cobra.Command {
 		},
 	}
 
+	cmd.Flags().StringVarP(&prefix, "prefix", "p", "sk-", "api key prefix")
 	cmd.Flags().StringVarP(&username, "name", "n", "", "username")
+	cmd.Flags().BoolVarP(&rotate, "rotate", "r", false, "rotate user key")
 	cmd.MarkFlagRequired("name")
 
 	return cmd
@@ -57,7 +61,9 @@ func masterKeyGenerate() *cobra.Command {
 }
 
 func apiKeyGenerate() *cobra.Command {
-	return &cobra.Command{
+	var prefix string
+
+	cmd := &cobra.Command{
 		Use:   "api",
 		Short: "generate api key",
 		Run: func(cmd *cobra.Command, args []string) {
@@ -65,7 +71,11 @@ func apiKeyGenerate() *cobra.Command {
 			if err != nil {
 				log.Fatal(err)
 			}
-			log.Println("sk-" + result)
+			log.Println(prefix + result)
 		},
 	}
+
+	cmd.Flags().StringVarP(&prefix, "prefix", "p", "sk-", "api key prefix")
+
+	return cmd
 }
