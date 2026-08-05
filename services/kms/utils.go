@@ -23,7 +23,7 @@ var (
 	ErrInvalidSecretKey = errors.New("secret key only allows 0-9, a-z, A-Z, . and -")
 )
 
-func masterKey() ([]byte, error) {
+func getMasterKey() ([]byte, error) {
 	key := os.Getenv("MASTER_KEY")
 	return utils.ValidateMasterKey(key)
 }

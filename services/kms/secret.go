@@ -38,7 +38,7 @@ func GetSecret(userID int64, key string) (*Secret, error) {
 		return nil, err
 	}
 
-	masterKey, err := masterKey()
+	masterKey, err := getMasterKey()
 	if err != nil {
 		return nil, err
 	}
@@ -72,7 +72,7 @@ func PutSecret(userID int64, key, value string) (*Secret, error) {
 		return nil, err
 	}
 
-	masterKey, err := masterKey()
+	masterKey, err := getMasterKey()
 	if err != nil {
 		return nil, err
 	}
