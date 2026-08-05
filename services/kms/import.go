@@ -24,6 +24,7 @@ func ImportFromDotenv(apiKey, input string) error {
 
 	for key, value := range env {
 		key = strings.ReplaceAll(key, "_", ".")
+		key = strings.ToLower(key)
 		if _, err := PutSecret(userID, key, value); err != nil {
 			return fmt.Errorf("import key %q: %w", key, err)
 		}

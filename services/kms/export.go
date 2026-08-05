@@ -41,6 +41,7 @@ func ExportToDotenv(apiKey, output string) error {
 			return err
 		}
 		key = dotenvKey(key)
+		key = strings.ToUpper(key)
 
 		value, err := chacha20.New().Decrypt(encrypted, masterKey)
 		if err != nil {
