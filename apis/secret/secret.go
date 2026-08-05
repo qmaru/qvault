@@ -24,6 +24,9 @@ func GetKey(c *echo.Context) error {
 	}
 
 	secret, err := kms.GetSecret(userID(c), key)
+	if err == kms.ErrInvalidSecretKey {
+		return echo.NewHTTPError(http.StatusBadRequest, "invalid secret key")
+	}
 	if err == kms.ErrNotFound {
 		return echo.NewHTTPError(http.StatusNotFound, "secret not found")
 	}
@@ -47,6 +50,9 @@ func PutKey(c *echo.Context) error {
 	}
 
 	secret, err := kms.PutSecret(userID(c), key, request.Value)
+	if err == kms.ErrInvalidSecretKey {
+		return echo.NewHTTPError(http.StatusBadRequest, "invalid secret key")
+	}
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
@@ -60,6 +66,9 @@ func DeleteKey(c *echo.Context) error {
 	}
 
 	err = kms.DeleteSecret(userID(c), key)
+	if err == kms.ErrInvalidSecretKey {
+		return echo.NewHTTPError(http.StatusBadRequest, "invalid secret key")
+	}
 	if err == kms.ErrNotFound {
 		return echo.NewHTTPError(http.StatusNotFound, "secret not found")
 	}

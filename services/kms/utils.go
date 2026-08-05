@@ -20,6 +20,7 @@ var (
 	ErrInvalidMasterKey = errors.New("MASTER_KEY must be exactly 32 bytes")
 	ErrInvalidUserName  = errors.New("user name is required")
 	ErrUserNotFound     = errors.New("user not found")
+	ErrInvalidSecretKey = errors.New("secret key only allows 0-9, a-z, A-Z, . and -")
 )
 
 func masterKey() ([]byte, error) {
@@ -33,4 +34,19 @@ func hashAPIKey(apiKey string) (string, error) {
 		return "", err
 	}
 	return hash.SumStream().ToHex(), nil
+}
+
+func ValidateSecretKey(key string) error {
+	if key == "" {
+		return ErrInvalidSecretKey
+	}
+	for _, char := range key {
+		if (char < '0' || char > '9') &&
+			(char < 'a' || char > 'z') &&
+			(char < 'A' || char > 'Z') &&
+			char != '.' && char != '-' {
+			return ErrInvalidSecretKey
+		}
+	}
+	return nil
 }

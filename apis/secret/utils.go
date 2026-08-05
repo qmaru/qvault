@@ -5,12 +5,14 @@ import (
 	"net/url"
 	"strings"
 
+	"qkms/services/kms"
+
 	"github.com/labstack/echo/v5"
 )
 
 func parseKey(c *echo.Context) (string, error) {
 	key, err := url.PathUnescape(strings.TrimSpace(c.Param("key")))
-	if err != nil || key == "" || key == ":key" {
+	if err != nil || kms.ValidateSecretKey(key) != nil {
 		return "", echo.NewHTTPError(http.StatusBadRequest, "secret key is required")
 	}
 	return key, nil

@@ -34,6 +34,10 @@ func ListKeys(userID int64) ([]string, error) {
 }
 
 func GetSecret(userID int64, key string) (*Secret, error) {
+	if err := ValidateSecretKey(key); err != nil {
+		return nil, err
+	}
+
 	masterKey, err := masterKey()
 	if err != nil {
 		return nil, err
@@ -64,6 +68,10 @@ func GetSecret(userID int64, key string) (*Secret, error) {
 }
 
 func PutSecret(userID int64, key, value string) (*Secret, error) {
+	if err := ValidateSecretKey(key); err != nil {
+		return nil, err
+	}
+
 	masterKey, err := masterKey()
 	if err != nil {
 		return nil, err
@@ -96,6 +104,10 @@ func PutSecret(userID int64, key, value string) (*Secret, error) {
 }
 
 func DeleteSecret(userID int64, key string) error {
+	if err := ValidateSecretKey(key); err != nil {
+		return err
+	}
+
 	db := dbs.GetDB()
 
 	result, err := db.Exec(fmt.Sprintf(
