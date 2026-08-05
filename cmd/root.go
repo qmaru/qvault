@@ -3,8 +3,8 @@ package cmd
 import (
 	"qkms/cmd/api"
 	"qkms/cmd/dbs"
-	"qkms/cmd/export"
 	"qkms/cmd/generate"
+	"qkms/cmd/manage"
 
 	"github.com/spf13/cobra"
 )
@@ -26,7 +26,7 @@ func Execute() error {
 	rootCmd.AddCommand(
 		api.NewCmd(),
 		dbs.NewCmd(),
-		export.NewCmd(),
+		manage.NewCmd(),
 		generate.NewCmd(),
 	)
 	if err := rootCmd.Execute(); err != nil {

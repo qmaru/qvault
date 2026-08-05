@@ -3,6 +3,7 @@ package kms
 import (
 	"errors"
 	"os"
+	"strings"
 
 	"qkms/utils"
 
@@ -36,17 +37,14 @@ func hashAPIKey(apiKey string) (string, error) {
 	return hash.SumStream().ToHex(), nil
 }
 
-func ValidateSecretKey(key string) error {
-	if key == "" {
-		return ErrInvalidSecretKey
-	}
-	for _, char := range key {
-		if (char < '0' || char > '9') &&
-			(char < 'a' || char > 'z') &&
-			(char < 'A' || char > 'Z') &&
-			char != '.' && char != '-' {
-			return ErrInvalidSecretKey
-		}
-	}
-	return nil
+func dotenvKey(key string) string {
+	key = strings.ReplaceAll(key, ".", "_")
+	return strings.ReplaceAll(key, "-", "_")
+}
+
+func escapeDotenvValue(value string) string {
+	value = strings.ReplaceAll(value, `\`, `\\`)
+	value = strings.ReplaceAll(value, `"`, `\"`)
+	value = strings.ReplaceAll(value, "\r", `\r`)
+	return strings.ReplaceAll(value, "\n", `\n`)
 }

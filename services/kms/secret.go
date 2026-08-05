@@ -125,3 +125,18 @@ func DeleteSecret(userID int64, key string) error {
 	}
 	return nil
 }
+
+func ValidateSecretKey(key string) error {
+	if key == "" {
+		return ErrInvalidSecretKey
+	}
+	for _, char := range key {
+		if (char < '0' || char > '9') &&
+			(char < 'a' || char > 'z') &&
+			(char < 'A' || char > 'Z') &&
+			char != '.' && char != '-' {
+			return ErrInvalidSecretKey
+		}
+	}
+	return nil
+}

@@ -1,4 +1,4 @@
-package export
+package manage
 
 import (
 	"log"
@@ -8,14 +8,14 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func NewCmd() *cobra.Command {
+func importCmd() *cobra.Command {
 	var apiKey string
-	var output string
+	var input string
 	cmd := &cobra.Command{
-		Use:   "export",
-		Short: "export command",
+		Use:   "import",
+		Short: "import command",
 		Run: func(cmd *cobra.Command, args []string) {
-			err := kms.ExportToDotenv(apiKey, output)
+			err := kms.ImportFromDotenv(apiKey, input)
 			if err != nil {
 				log.Fatal(err)
 			}
@@ -23,7 +23,7 @@ func NewCmd() *cobra.Command {
 	}
 
 	cmd.Flags().StringVarP(&apiKey, "key", "k", "", "API Key")
-	cmd.Flags().StringVarP(&output, "output", "o", "kms.env", "Output file path")
+	cmd.Flags().StringVarP(&input, "input", "i", "kms.env", "Input file path")
 	cmd.MarkFlagRequired("key")
 
 	return cmd

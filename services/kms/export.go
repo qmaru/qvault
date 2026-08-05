@@ -40,6 +40,7 @@ func ExportToDotenv(apiKey, output string) error {
 		if err := rows.Scan(&key, &encrypted); err != nil {
 			return err
 		}
+		key = dotenvKey(key)
 
 		value, err := chacha20.New().Decrypt(encrypted, masterKey)
 		if err != nil {
@@ -52,11 +53,4 @@ func ExportToDotenv(apiKey, output string) error {
 	}
 
 	return os.WriteFile(output, []byte(dotenv.String()), 0600)
-}
-
-func escapeDotenvValue(value string) string {
-	value = strings.ReplaceAll(value, `\`, `\\`)
-	value = strings.ReplaceAll(value, `"`, `\"`)
-	value = strings.ReplaceAll(value, "\r", `\r`)
-	return strings.ReplaceAll(value, "\n", `\n`)
 }
