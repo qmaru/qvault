@@ -1,0 +1,3 @@
+# qmks
+
+easy kms
