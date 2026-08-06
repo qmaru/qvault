@@ -11,7 +11,7 @@ import (
 func NewCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "dbs",
-		Short: "dbs command",
+		Short: "database manager",
 	}
 
 	cmd.AddCommand(
@@ -24,7 +24,7 @@ func NewCmd() *cobra.Command {
 func createDB() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "create",
-		Short: "create database",
+		Short: "create a database",
 		Run: func(cmd *cobra.Command, args []string) {
 			err := dbs.CreateDB()
 			if err != nil {

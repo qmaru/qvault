@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"qkms/dbs"
+	"qkms/services/common"
 	"qkms/utils"
 )
 
@@ -15,7 +16,7 @@ func Authenticate(apiKey string) (int64, error) {
 		return 0, ErrInvalidAPIKey
 	}
 
-	apiKeyHash, err := hashAPIKey(apiKey)
+	apiKeyHash, err := common.HashAPIKey(apiKey)
 	if err != nil {
 		return 0, err
 	}
@@ -48,7 +49,7 @@ func CreateUser(name string, prefix string, rotate bool) (string, error) {
 	}
 	key = prefix + key
 
-	apiKeyHash, err := hashAPIKey(key)
+	apiKeyHash, err := common.HashAPIKey(key)
 	if err != nil {
 		return "", err
 	}

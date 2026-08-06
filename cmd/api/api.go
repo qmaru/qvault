@@ -11,7 +11,7 @@ import (
 func NewCmd() *cobra.Command {
 	return &cobra.Command{
 		Use:   "api",
-		Short: "api command",
+		Short: "run an API server",
 		Run: func(cmd *cobra.Command, args []string) {
 			err := apis.Run()
 			if err != nil {

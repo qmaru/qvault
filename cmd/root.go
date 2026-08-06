@@ -12,7 +12,7 @@ import (
 var (
 	rootCmd = &cobra.Command{
 		Use:     "qkms",
-		Short:   "qkms command",
+		Short:   "qmaru key management service",
 		Version: "1.0.0",
 		Run: func(cmd *cobra.Command, args []string) {
 			cmd.Help()

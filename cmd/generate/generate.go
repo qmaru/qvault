@@ -13,7 +13,7 @@ import (
 func NewCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "generate",
-		Short: "generate command",
+		Short: "generate some keys",
 	}
 
 	cmd.AddCommand(masterKeyGenerate(), apiKeyGenerate(), userCreate())
@@ -28,7 +28,7 @@ func userCreate() *cobra.Command {
 
 	cmd := &cobra.Command{
 		Use:   "user",
-		Short: "create user",
+		Short: "create a user",
 		Run: func(cmd *cobra.Command, args []string) {
 			key, err := kms.CreateUser(username, prefix, rotate)
 			if err != nil {
@@ -49,7 +49,7 @@ func userCreate() *cobra.Command {
 func masterKeyGenerate() *cobra.Command {
 	return &cobra.Command{
 		Use:   "master",
-		Short: "generate master key",
+		Short: "generate a master key",
 		Run: func(cmd *cobra.Command, args []string) {
 			result, err := utils.GenerateMasterKey()
 			if err != nil {
@@ -65,7 +65,7 @@ func apiKeyGenerate() *cobra.Command {
 
 	cmd := &cobra.Command{
 		Use:   "api",
-		Short: "generate api key",
+		Short: "generate a api key",
 		Run: func(cmd *cobra.Command, args []string) {
 			result, err := utils.GenerateAPIKey()
 			if err != nil {

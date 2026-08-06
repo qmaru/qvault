@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"qkms/dbs"
+	"qkms/services/common"
 
 	"github.com/qmaru/minitools/v2/secret/chacha20"
 	"github.com/qmaru/qdb/sqlitep"
@@ -38,7 +39,7 @@ func GetSecret(userID int64, key string) (*Secret, error) {
 		return nil, err
 	}
 
-	masterKey, err := getMasterKey()
+	masterKey, err := common.GetMasterKey()
 	if err != nil {
 		return nil, err
 	}
@@ -72,7 +73,7 @@ func PutSecret(userID int64, key, value string) (*Secret, error) {
 		return nil, err
 	}
 
-	masterKey, err := getMasterKey()
+	masterKey, err := common.GetMasterKey()
 	if err != nil {
 		return nil, err
 	}
