@@ -26,12 +26,13 @@ func importCmd() *cobra.Command {
 	var apiKey string
 	var input string
 	var prefix string
+	var force bool
 
 	cmd := &cobra.Command{
 		Use:   "import",
 		Short: "import a user's keys from a dotenv file",
 		Run: func(cmd *cobra.Command, args []string) {
-			err := manager.ImportFromDotenv(apiKey, input, prefix)
+			err := manager.ImportFromDotenv(apiKey, input, prefix, force)
 			if err != nil {
 				log.Fatal(err)
 			}
@@ -41,6 +42,7 @@ func importCmd() *cobra.Command {
 	cmd.Flags().StringVarP(&apiKey, "key", "k", "", "api key")
 	cmd.Flags().StringVarP(&input, "input", "i", "kms.env", "input file path")
 	cmd.Flags().StringVarP(&prefix, "prefix", "p", "", "key prefix")
+	cmd.Flags().BoolVarP(&force, "force", "f", false, "overwrite existing keys")
 	cmd.MarkFlagRequired("key")
 
 	return cmd

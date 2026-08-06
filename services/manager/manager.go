@@ -62,7 +62,7 @@ func ExportToDotenv(apiKey, output, prefix string) error {
 	return os.WriteFile(output, []byte(dotenv.String()), 0600)
 }
 
-func ImportFromDotenv(apiKey, input, prefix string) error {
+func ImportFromDotenv(apiKey, input, prefix string, force bool) error {
 	if strings.TrimSpace(input) == "" {
 		return fmt.Errorf("input path is required")
 	}
@@ -70,6 +70,15 @@ func ImportFromDotenv(apiKey, input, prefix string) error {
 	userID, err := kms.Authenticate(apiKey)
 	if err != nil {
 		return err
+	}
+
+	existingKeys, err := kms.ListKeys(userID)
+	if err != nil {
+		return err
+	}
+	existing := make(map[string]struct{}, len(existingKeys))
+	for _, key := range existingKeys {
+		existing[key] = struct{}{}
 	}
 
 	env, err := godotenv.Read(input)
@@ -82,6 +91,11 @@ func ImportFromDotenv(apiKey, input, prefix string) error {
 		key = strings.ToLower(key)
 		if prefix != "" && !strings.HasPrefix(key, prefix) {
 			continue
+		}
+		if !force {
+			if _, exists := existing[key]; exists {
+				continue
+			}
 		}
 		if _, err := kms.PutSecret(userID, key, value); err != nil {
 			return fmt.Errorf("import key %q: %w", key, err)
