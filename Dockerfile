@@ -14,11 +14,13 @@ RUN go mod download
 
 COPY . .
 
-RUN GO_VERSION=$(go env GOVERSION) && \
-    GO_OS=$(go env GOOS) && \
-    GO_ARCH=$(go env GOARCH) && \
-    VERSION="${QV_VERSION} (${GO_VERSION} ${GO_OS}/${GO_ARCH})" && \
-    go build -trimpath -ldflags="-s -w -X qvault/utils.Version=${VERSION}" -o /usr/src/qvault \
+RUN GO_VERSION=$(go env GOVERSION) \
+    && GO_OS=$(go env GOOS) \
+    && GO_ARCH=$(go env GOARCH) \
+    && VERSION="${QV_VERSION} (${GO_VERSION} ${GO_OS}/${GO_ARCH})" \
+    && go build -trimpath \
+        -ldflags="-s -w -X 'qvault/utils.Version=${VERSION}'" \
+        -o /usr/src/qvault \
     && upx --best --lzma /usr/src/qvault
 
 FROM scratch AS server
