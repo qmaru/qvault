@@ -35,4 +35,4 @@ jobs:
           target: server
           platforms: linux/amd64,linux/arm64
           tags: |
-            ghcr.io/${{ github.repository_owner }}/qkms:latest
+            ghcr.io/${{ github.repository_owner }}/qvault:latest

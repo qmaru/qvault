@@ -3,7 +3,7 @@ package api
 import (
 	"log"
 
-	"qkms/apis"
+	"qvault/apis"
 
 	"github.com/spf13/cobra"
 )

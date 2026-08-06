@@ -3,7 +3,7 @@ package dbs
 import (
 	"log"
 
-	"qkms/dbs"
+	"qvault/dbs"
 
 	"github.com/spf13/cobra"
 )

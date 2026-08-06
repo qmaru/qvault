@@ -1,12 +1,12 @@
-package kms
+package secret
 
 import (
 	"database/sql"
 	"fmt"
 	"time"
 
-	"qkms/dbs"
-	"qkms/services/common"
+	"qvault/dbs"
+	"qvault/services/common"
 
 	"github.com/qmaru/minitools/v2/secret/chacha20"
 	"github.com/qmaru/qdb/sqlitep"

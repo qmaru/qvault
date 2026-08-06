@@ -3,8 +3,8 @@ package main
 import (
 	"log"
 
-	"qkms/cmd"
-	"qkms/utils"
+	"qvault/cmd"
+	"qvault/utils"
 )
 
 func main() {

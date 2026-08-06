@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"strings"
 
-	"qkms/services/kms"
+	"qvault/services/secret"
 
 	"github.com/labstack/echo/v5"
 )
@@ -17,8 +17,8 @@ func AuthMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 			return echo.NewHTTPError(http.StatusUnauthorized, "Missing or invalid token")
 		}
 
-		userID, err := kms.Authenticate(strings.TrimSpace(parts[1]))
-		if err == kms.ErrInvalidAPIKey {
+		userID, err := secret.Authenticate(strings.TrimSpace(parts[1]))
+		if err == secret.ErrInvalidAPIKey {
 			return echo.NewHTTPError(http.StatusUnauthorized, "Missing or invalid token")
 		}
 		if err != nil {

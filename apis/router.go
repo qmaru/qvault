@@ -4,8 +4,8 @@ import (
 	"log"
 	"os"
 
-	"qkms/apis/health"
-	"qkms/apis/secret"
+	"qvault/apis/health"
+	"qvault/apis/secret"
 
 	"github.com/labstack/echo/v5"
 	"github.com/labstack/echo/v5/middleware"

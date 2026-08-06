@@ -4,13 +4,13 @@ import (
 	"net/http"
 	"strings"
 
-	"qkms/services/kms"
+	"qvault/services/secret"
 
 	"github.com/labstack/echo/v5"
 )
 
 func ListKeys(c *echo.Context) error {
-	keys, err := kms.ListKeys(userID(c))
+	keys, err := secret.ListKeys(userID(c))
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
@@ -23,17 +23,17 @@ func GetKey(c *echo.Context) error {
 		return err
 	}
 
-	secret, err := kms.GetSecret(userID(c), key)
-	if err == kms.ErrInvalidSecretKey {
+	sec, err := secret.GetSecret(userID(c), key)
+	if err == secret.ErrInvalidSecretKey {
 		return echo.NewHTTPError(http.StatusBadRequest, "invalid secret key")
 	}
-	if err == kms.ErrNotFound {
+	if err == secret.ErrNotFound {
 		return echo.NewHTTPError(http.StatusNotFound, "secret not found")
 	}
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
-	return c.JSON(http.StatusOK, secret)
+	return c.JSON(http.StatusOK, sec)
 }
 
 func PutKey(c *echo.Context) error {
@@ -49,14 +49,14 @@ func PutKey(c *echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, "invalid request body")
 	}
 
-	secret, err := kms.PutSecret(userID(c), key, request.Value)
-	if err == kms.ErrInvalidSecretKey {
+	sec, err := secret.PutSecret(userID(c), key, request.Value)
+	if err == secret.ErrInvalidSecretKey {
 		return echo.NewHTTPError(http.StatusBadRequest, "invalid secret key")
 	}
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
-	return c.JSON(http.StatusOK, secret)
+	return c.JSON(http.StatusOK, sec)
 }
 
 func DeleteKey(c *echo.Context) error {
@@ -65,11 +65,11 @@ func DeleteKey(c *echo.Context) error {
 		return err
 	}
 
-	err = kms.DeleteSecret(userID(c), key)
-	if err == kms.ErrInvalidSecretKey {
+	err = secret.DeleteSecret(userID(c), key)
+	if err == secret.ErrInvalidSecretKey {
 		return echo.NewHTTPError(http.StatusBadRequest, "invalid secret key")
 	}
-	if err == kms.ErrNotFound {
+	if err == secret.ErrNotFound {
 		return echo.NewHTTPError(http.StatusNotFound, "secret not found")
 	}
 	if err != nil {

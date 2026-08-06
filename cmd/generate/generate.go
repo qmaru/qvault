@@ -3,9 +3,9 @@ package generate
 import (
 	"fmt"
 	"log"
-
-	"qkms/services/kms"
-	"qkms/utils"
+	
+	"qvault/services/secret"
+	"qvault/utils"
 
 	"github.com/spf13/cobra"
 )
@@ -30,7 +30,7 @@ func userCreate() *cobra.Command {
 		Use:   "user",
 		Short: "create a user",
 		Run: func(cmd *cobra.Command, args []string) {
-			key, err := kms.CreateUser(username, prefix, rotate)
+			key, err := secret.CreateUser(username, prefix, rotate)
 			if err != nil {
 				log.Fatal(err)
 			}

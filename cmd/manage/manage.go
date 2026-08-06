@@ -3,7 +3,7 @@ package manage
 import (
 	"log"
 
-	"qkms/services/manager"
+	"qvault/services/manager"
 
 	"github.com/spf13/cobra"
 )

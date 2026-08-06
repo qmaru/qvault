@@ -1,3 +1,3 @@
-# qmks
+# qvault
 
-easy kms
+lightweight and secure password manager.

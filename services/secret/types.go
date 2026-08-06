@@ -1,4 +1,4 @@
-package kms
+package secret
 
 import (
 	"errors"

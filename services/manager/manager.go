@@ -5,9 +5,9 @@ import (
 	"os"
 	"strings"
 
-	"qkms/dbs"
-	"qkms/services/common"
-	"qkms/services/kms"
+	"qvault/dbs"
+	"qvault/services/common"
+	"qvault/services/secret"
 
 	"github.com/joho/godotenv"
 	"github.com/qmaru/minitools/v2/secret/chacha20"
@@ -18,7 +18,7 @@ func ExportToDotenv(apiKey, output, prefix string) error {
 		return fmt.Errorf("output path is required")
 	}
 
-	userID, err := kms.Authenticate(apiKey)
+	userID, err := secret.Authenticate(apiKey)
 	if err != nil {
 		return err
 	}
@@ -67,12 +67,12 @@ func ImportFromDotenv(apiKey, input, prefix string, force bool) error {
 		return fmt.Errorf("input path is required")
 	}
 
-	userID, err := kms.Authenticate(apiKey)
+	userID, err := secret.Authenticate(apiKey)
 	if err != nil {
 		return err
 	}
 
-	existingKeys, err := kms.ListKeys(userID)
+	existingKeys, err := secret.ListKeys(userID)
 	if err != nil {
 		return err
 	}
@@ -97,7 +97,7 @@ func ImportFromDotenv(apiKey, input, prefix string, force bool) error {
 				continue
 			}
 		}
-		if _, err := kms.PutSecret(userID, key, value); err != nil {
+		if _, err := secret.PutSecret(userID, key, value); err != nil {
 			return fmt.Errorf("import key %q: %w", key, err)
 		}
 	}
@@ -105,12 +105,12 @@ func ImportFromDotenv(apiKey, input, prefix string, force bool) error {
 }
 
 func ListKeys(apiKey, prefix string) ([]string, error) {
-	userID, err := kms.Authenticate(apiKey)
+	userID, err := secret.Authenticate(apiKey)
 	if err != nil {
 		return nil, err
 	}
 
-	keys, err := kms.ListKeys(userID)
+	keys, err := secret.ListKeys(userID)
 	if err != nil {
 		return nil, err
 	}

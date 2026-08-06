@@ -1,4 +1,4 @@
-module qkms
+module qvault
 
 go 1.26.5
 

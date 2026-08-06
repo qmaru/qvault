@@ -1,17 +1,17 @@
 package cmd
 
 import (
-	"qkms/cmd/api"
-	"qkms/cmd/dbs"
-	"qkms/cmd/generate"
-	"qkms/cmd/manage"
+	"qvault/cmd/api"
+	"qvault/cmd/dbs"
+	"qvault/cmd/generate"
+	"qvault/cmd/manage"
 
 	"github.com/spf13/cobra"
 )
 
 var (
 	rootCmd = &cobra.Command{
-		Use:     "qkms",
+		Use:     "qvault",
 		Short:   "qmaru key management service",
 		Version: "1.0.0",
 		Run: func(cmd *cobra.Command, args []string) {

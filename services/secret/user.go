@@ -1,4 +1,4 @@
-package kms
+package secret
 
 import (
 	"database/sql"
@@ -6,9 +6,9 @@ import (
 	"strings"
 	"time"
 
-	"qkms/dbs"
-	"qkms/services/common"
-	"qkms/utils"
+	"qvault/dbs"
+	"qvault/services/common"
+	"qvault/utils"
 )
 
 func Authenticate(apiKey string) (int64, error) {
