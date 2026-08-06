@@ -5,31 +5,35 @@ import (
 	"qvault/cmd/dbs"
 	"qvault/cmd/generate"
 	"qvault/cmd/manage"
+	"qvault/utils"
 
 	"github.com/spf13/cobra"
 )
 
-var (
-	rootCmd = &cobra.Command{
+func NewCmd() *cobra.Command {
+	cmd := &cobra.Command{
 		Use:     "qvault",
-		Short:   "qmaru key management service",
-		Version: "1.0.0",
+		Short:   "qvault key management service",
+		Version: utils.Version,
 		Run: func(cmd *cobra.Command, args []string) {
 			cmd.Help()
 		},
 	}
-)
 
-func Execute() error {
-	rootCmd.CompletionOptions.DisableDefaultCmd = true
-	rootCmd.DisableFlagsInUseLine = true
-	rootCmd.AddCommand(
+	cmd.CompletionOptions.DisableDefaultCmd = true
+	cmd.DisableFlagsInUseLine = true
+	cmd.AddCommand(
 		api.NewCmd(),
 		dbs.NewCmd(),
 		manage.NewCmd(),
 		generate.NewCmd(),
 	)
-	if err := rootCmd.Execute(); err != nil {
+
+	return cmd
+}
+
+func Execute() error {
+	if err := NewCmd().Execute(); err != nil {
 		return err
 	}
 	return nil

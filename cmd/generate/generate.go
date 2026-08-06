@@ -3,7 +3,7 @@ package generate
 import (
 	"fmt"
 	"log"
-	
+
 	"qvault/services/secret"
 	"qvault/utils"
 
