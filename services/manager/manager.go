@@ -13,7 +13,7 @@ import (
 	"github.com/qmaru/minitools/v2/secret/chacha20"
 )
 
-func ExportToDotenv(apiKey, output string) error {
+func ExportToDotenv(apiKey, output, prefix string) error {
 	if strings.TrimSpace(output) == "" {
 		return fmt.Errorf("output path is required")
 	}
@@ -43,6 +43,9 @@ func ExportToDotenv(apiKey, output string) error {
 		if err := rows.Scan(&key, &encrypted); err != nil {
 			return err
 		}
+		if prefix != "" && !strings.HasPrefix(key, prefix) {
+			continue
+		}
 		key = common.DotenvKey(key)
 		key = strings.ToUpper(key)
 
@@ -59,7 +62,7 @@ func ExportToDotenv(apiKey, output string) error {
 	return os.WriteFile(output, []byte(dotenv.String()), 0600)
 }
 
-func ImportFromDotenv(apiKey, input string) error {
+func ImportFromDotenv(apiKey, input, prefix string) error {
 	if strings.TrimSpace(input) == "" {
 		return fmt.Errorf("input path is required")
 	}
@@ -77,6 +80,9 @@ func ImportFromDotenv(apiKey, input string) error {
 	for key, value := range env {
 		key = strings.ReplaceAll(key, "_", ".")
 		key = strings.ToLower(key)
+		if prefix != "" && !strings.HasPrefix(key, prefix) {
+			continue
+		}
 		if _, err := kms.PutSecret(userID, key, value); err != nil {
 			return fmt.Errorf("import key %q: %w", key, err)
 		}
@@ -84,6 +90,26 @@ func ImportFromDotenv(apiKey, input string) error {
 	return nil
 }
 
-func ListUsers() {}
+func ListKeys(apiKey, prefix string) ([]string, error) {
+	userID, err := kms.Authenticate(apiKey)
+	if err != nil {
+		return nil, err
+	}
 
-func ListKeys(apiKey, prefix string) {}
+	keys, err := kms.ListKeys(userID)
+	if err != nil {
+		return nil, err
+	}
+
+	if prefix == "" {
+		return keys, nil
+	}
+
+	filtered := make([]string, 0, len(keys))
+	for _, key := range keys {
+		if strings.HasPrefix(key, prefix) {
+			filtered = append(filtered, key)
+		}
+	}
+	return filtered, nil
+}
