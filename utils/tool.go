@@ -2,6 +2,7 @@ package utils
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/qmaru/minitools/v2/encoding/text"
 	"github.com/qmaru/minitools/v2/random/nanoid"
@@ -13,7 +14,7 @@ const ALPHABET string = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrs
 
 func LoadEnv() error {
 	err := godotenv.Load()
-	if err != nil {
+	if err != nil && !os.IsNotExist(err) {
 		return err
 	}
 	return nil
