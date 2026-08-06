@@ -11,7 +11,7 @@ import (
 func NewCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "manage",
-		Short: "kms manager",
+		Short: "secret manager",
 		Run: func(cmd *cobra.Command, args []string) {
 			cmd.Help()
 		},
@@ -40,7 +40,7 @@ func importCmd() *cobra.Command {
 	}
 
 	cmd.Flags().StringVarP(&apiKey, "key", "k", "", "api key")
-	cmd.Flags().StringVarP(&input, "input", "i", "kms.env", "input file path")
+	cmd.Flags().StringVarP(&input, "input", "i", "secret.env", "input file path")
 	cmd.Flags().StringVarP(&prefix, "prefix", "p", "", "key prefix")
 	cmd.Flags().BoolVarP(&force, "force", "f", false, "overwrite existing keys")
 	cmd.MarkFlagRequired("key")
@@ -65,7 +65,7 @@ func exportCmd() *cobra.Command {
 	}
 
 	cmd.Flags().StringVarP(&apiKey, "key", "k", "", "api key")
-	cmd.Flags().StringVarP(&output, "output", "o", "kms.env", "output file path")
+	cmd.Flags().StringVarP(&output, "output", "o", "secret.env", "output file path")
 	cmd.Flags().StringVarP(&prefix, "prefix", "p", "", "key prefix")
 	cmd.MarkFlagRequired("key")
 
