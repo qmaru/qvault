@@ -10,8 +10,6 @@ import (
 	"github.com/joho/godotenv"
 )
 
-const ALPHABET string = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
-
 func LoadEnv() error {
 	err := godotenv.Load()
 	if err != nil && !os.IsNotExist(err) {
@@ -22,7 +20,7 @@ func LoadEnv() error {
 
 func GenerateAPIKey() (string, error) {
 	n := nanoid.New()
-	apiKey, err := n.Generate(ALPHABET, 43)
+	apiKey, err := n.Generate(nanoid.AlphabetBase62, 43)
 	if err != nil {
 		return "", err
 	}
