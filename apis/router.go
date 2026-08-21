@@ -16,6 +16,7 @@ func Run() error {
 
 	e.Use(middleware.RequestLogger())
 	e.Use(middleware.Recover())
+	e.Use(middleware.BodyLimit(1 * 1024 * 1024))
 
 	api := e.Group("/api/v1")
 	api.GET("/health", health.Health)
@@ -26,7 +27,15 @@ func Run() error {
 	secretGroup.PUT("/:key", secret.PutKey)
 	secretGroup.DELETE("/:key", secret.DeleteKey)
 
-	listenAddr := os.Getenv("SERVER_HOST") + ":" + os.Getenv("SERVER_PORT")
+	host := os.Getenv("SERVER_HOST")
+	if host == "" {
+		host = "127.0.0.1"
+	}
+	port := os.Getenv("SERVER_PORT")
+	if port == "" {
+		port = "8080"
+	}
+	listenAddr := host + ":" + port
 	log.Println("Listening on", listenAddr)
 
 	return e.Start(listenAddr)
