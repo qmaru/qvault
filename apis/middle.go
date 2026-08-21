@@ -1,6 +1,7 @@
 package apis
 
 import (
+	"log"
 	"net/http"
 	"strings"
 
@@ -22,7 +23,8 @@ func AuthMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 			return echo.NewHTTPError(http.StatusUnauthorized, "Missing or invalid token")
 		}
 		if err != nil {
-			return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+			log.Printf("authenticate request failed: %v", err)
+			return echo.NewHTTPError(http.StatusInternalServerError, "internal server error")
 		}
 		c.Set("user_id", userID)
 

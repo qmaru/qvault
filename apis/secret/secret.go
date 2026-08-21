@@ -1,6 +1,7 @@
 package secret
 
 import (
+	"log"
 	"net/http"
 	"strings"
 
@@ -12,7 +13,8 @@ import (
 func ListKeys(c *echo.Context) error {
 	keys, err := secret.ListKeys(userID(c))
 	if err != nil {
-		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+		log.Printf("list secrets failed: %v", err)
+		return echo.NewHTTPError(http.StatusInternalServerError, "internal server error")
 	}
 	return c.JSON(http.StatusOK, keys)
 }
@@ -31,7 +33,8 @@ func GetKey(c *echo.Context) error {
 		return echo.NewHTTPError(http.StatusNotFound, "secret not found")
 	}
 	if err != nil {
-		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+		log.Printf("get secret failed: %v", err)
+		return echo.NewHTTPError(http.StatusInternalServerError, "internal server error")
 	}
 	return c.JSON(http.StatusOK, sec)
 }
@@ -57,7 +60,8 @@ func PutKey(c *echo.Context) error {
 		return echo.NewHTTPError(http.StatusRequestEntityTooLarge, "secret value is too large")
 	}
 	if err != nil {
-		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+		log.Printf("put secret failed: %v", err)
+		return echo.NewHTTPError(http.StatusInternalServerError, "internal server error")
 	}
 	return c.JSON(http.StatusOK, sec)
 }
@@ -76,7 +80,8 @@ func DeleteKey(c *echo.Context) error {
 		return echo.NewHTTPError(http.StatusNotFound, "secret not found")
 	}
 	if err != nil {
-		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+		log.Printf("delete secret failed: %v", err)
+		return echo.NewHTTPError(http.StatusInternalServerError, "internal server error")
 	}
 	return c.NoContent(http.StatusNoContent)
 }
