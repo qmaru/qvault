@@ -9,7 +9,6 @@ import (
 	"qvault/services/common"
 
 	"github.com/qmaru/minitools/v2/secret/chacha20"
-	"github.com/qmaru/qdb/sqlitep"
 )
 
 func ListKeys(userID int64) ([]string, error) {
@@ -93,18 +92,23 @@ func PutSecret(userID int64, key, value string) (*Secret, error) {
 	db := dbs.GetDB()
 
 	now := time.Now().Unix()
-	err = db.Transaction(func(tx sqlitep.Tx) error {
-		_, err := db.ExecWithTx(tx, fmt.Sprintf(
-			"INSERT INTO %s (user_id, key, value, created_at, updated_at) VALUES (?, ?, ?, ?, ?) "+
-				"ON CONFLICT(user_id, key) DO UPDATE SET value = excluded.value, updated_at = excluded.updated_at",
-			dbs.SecretTable,
-		), userID, key, encrypted, now, now)
-		return err
+	err = db.Transaction(func(tx dbs.Tx) error {
+		return PutSecretTx(tx, userID, key, encrypted, now)
 	})
 	if err != nil {
 		return nil, err
 	}
 	return &Secret{Key: key, Value: value}, nil
+}
+
+func PutSecretTx(tx dbs.Tx, userID int64, key string, encrypted []byte, now int64) error {
+	db := dbs.GetDB()
+	_, err := db.ExecWithTx(tx, fmt.Sprintf(
+		"INSERT INTO %s (user_id, key, value, created_at, updated_at) VALUES (?, ?, ?, ?, ?) "+
+			"ON CONFLICT(user_id, key) DO UPDATE SET value = excluded.value, updated_at = excluded.updated_at",
+		dbs.SecretTable,
+	), userID, key, encrypted, now, now)
+	return err
 }
 
 func DeleteSecret(userID int64, key string) error {

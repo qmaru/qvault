@@ -13,6 +13,8 @@ const (
 	SecretTable = "secret"
 )
 
+type Tx = sqlitep.Tx
+
 var GetDB = sync.OnceValue(func() *sqlitep.Sqlite {
 	return sqlitep.New(os.Getenv("SQLITE_DB_PATH"))
 })

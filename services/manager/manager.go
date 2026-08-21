@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"time"
 
 	"qvault/dbs"
 	"qvault/services/common"
@@ -86,20 +87,54 @@ func ImportFromDotenv(apiKey, input, prefix string, force bool) error {
 		return err
 	}
 
+	entries := make(map[string]string, len(env))
 	for key, value := range env {
 		key = strings.ReplaceAll(key, "_", ".")
 		key = strings.ToLower(key)
 		if prefix != "" && !strings.HasPrefix(key, prefix) {
 			continue
 		}
+		if err := secret.ValidateSecretKey(key); err != nil {
+			return fmt.Errorf("import key %q: %w", key, err)
+		}
+		if len(value) > secret.MaxSecretValueBytes {
+			return fmt.Errorf("import key %q: %w", key, secret.ErrSecretValueTooLarge)
+		}
 		if !force {
 			if _, exists := existing[key]; exists {
 				continue
 			}
 		}
-		if _, err := secret.PutSecret(userID, key, value); err != nil {
-			return fmt.Errorf("import key %q: %w", key, err)
+		if _, exists := entries[key]; exists {
+			return fmt.Errorf("import key %q: duplicate key", key)
 		}
+		entries[key] = value
+	}
+
+	db := dbs.GetDB()
+	err = db.Transaction(func(tx dbs.Tx) error {
+		now := time.Now().Unix()
+		masterKey, err := common.GetMasterKey()
+		if err != nil {
+			return err
+		}
+		for key, value := range entries {
+			nonce, err := chacha20.New().GenerateNonce()
+			if err != nil {
+				return fmt.Errorf("import key %q: %w", key, err)
+			}
+			encrypted, err := chacha20.New().Encrypt([]byte(value), masterKey, nonce)
+			if err != nil {
+				return fmt.Errorf("import key %q: %w", key, err)
+			}
+			if err := secret.PutSecretTx(tx, userID, key, encrypted, now); err != nil {
+				return fmt.Errorf("import key %q: %w", key, err)
+			}
+		}
+		return nil
+	})
+	if err != nil {
+		return err
 	}
 	return nil
 }
