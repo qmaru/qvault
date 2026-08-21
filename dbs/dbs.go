@@ -23,8 +23,14 @@ func CreateIndexes() error {
 	db := GetDB()
 
 	return db.Transaction(func(tx sqlitep.Tx) error {
+		userNameIndex := fmt.Sprintf("CREATE UNIQUE INDEX IF NOT EXISTS idx_user_name ON %s(name);", UserTable)
+		_, err := db.ExecWithTx(tx, userNameIndex)
+		if err != nil {
+			return err
+		}
+
 		userIndex := fmt.Sprintf("CREATE UNIQUE INDEX IF NOT EXISTS idx_user_api_key_hash ON %s(api_key_hash);", UserTable)
-		_, err := db.ExecWithTx(tx, userIndex)
+		_, err = db.ExecWithTx(tx, userIndex)
 		if err != nil {
 			return err
 		}
