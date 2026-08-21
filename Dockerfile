@@ -1,4 +1,4 @@
-ARG GO_VERSION=1.26-alpine
+ARG GO_VERSION=alpine
 ARG QV_VERSION="unknown"
 
 FROM golang:${GO_VERSION} AS build
