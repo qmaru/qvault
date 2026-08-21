@@ -72,6 +72,9 @@ func PutSecret(userID int64, key, value string) (*Secret, error) {
 	if err := ValidateSecretKey(key); err != nil {
 		return nil, err
 	}
+	if len(value) > MaxSecretValueBytes {
+		return nil, ErrSecretValueTooLarge
+	}
 
 	masterKey, err := common.GetMasterKey()
 	if err != nil {

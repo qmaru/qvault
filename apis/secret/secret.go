@@ -53,6 +53,9 @@ func PutKey(c *echo.Context) error {
 	if err == secret.ErrInvalidSecretKey {
 		return echo.NewHTTPError(http.StatusBadRequest, "invalid secret key")
 	}
+	if err == secret.ErrSecretValueTooLarge {
+		return echo.NewHTTPError(http.StatusRequestEntityTooLarge, "secret value is too large")
+	}
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
